@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, MQTTComponent, Process, consoleCheckerThread, MQTTComponentReadThread;
+  ExtCtrls, MQTTComponent, Process, consoleCheckerThread, MQTTComponentReadThread,
+  regexpr;
 
 type
 
@@ -85,16 +86,32 @@ procedure TfrmMonitor.MQTTClient1ConnAck(Sender: TObject; ReturnCode: integer);
 begin
   MQTTClient1.Subscribe('status/lives');
   MQTTClient1.Subscribe('status/round');
+  MQTTClient1.Subscribe('clients/#');
 end;
 
 procedure TfrmMonitor.MQTTClient1Publish(Sender: TObject; topic,
   payload: ansistring);
+var
+    RegexObj: TRegExpr;
+    id: integer;
 begin
   writeln('got message on topic: ' + topic);
   if topic = 'status/lives' then
     lblLives.Caption:='Lives' + #10 + payload;
   if topic = 'status/round' then
     lblRound.Caption:='Round' + #10 + payload;
+
+  RegexObj := TRegExpr.Create;
+  RegexObj.Expression := 'clients/192\.168\.1\.3\d/heartbeat';
+  if RegexObj.Exec(topic) then begin
+    writeln('Seen a console');
+    writeln('Seen a console');
+        writeln('Seen a console');
+            writeln('Seen a console');
+    id := strtoint(topic[20])-1;
+    consoleChecker.seenConsole(id);
+  end;
+  RegexObj.Free;
 end;
 
 
