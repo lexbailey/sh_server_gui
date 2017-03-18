@@ -1,0 +1,154 @@
+object frmMonitor: TfrmMonitor
+  Left = 794
+  Height = 460
+  Top = 120
+  Width = 790
+  Caption = 'Spacehack Monitor'
+  ClientHeight = 460
+  ClientWidth = 790
+  OnCreate = FormCreate
+  LCLVersion = '1.6.0.4'
+  object btnSkipIntro: TButton
+    Left = 208
+    Height = 129
+    Top = 64
+    Width = 192
+    Caption = 'Skip intro'
+    OnClick = btnSkipIntroClick
+    TabOrder = 0
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 56
+    Top = 0
+    Width = 790
+    Align = alTop
+    ClientHeight = 56
+    ClientWidth = 790
+    TabOrder = 1
+    object lblMQTTState: TLabel
+      Left = 1
+      Height = 54
+      Hint = 'MQTT'
+      Top = 1
+      Width = 118
+      Align = alLeft
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'MQTT'#10'Disconnected'
+      Color = clRed
+      Layout = tlCenter
+      ParentColor = False
+      Transparent = False
+    end
+    object lblC1State: TLabel
+      Left = 119
+      Height = 54
+      Hint = 'Console 1'
+      Top = 1
+      Width = 118
+      Align = alLeft
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'Console 1'#10'Disconnected'
+      Color = clRed
+      Layout = tlCenter
+      ParentColor = False
+      Transparent = False
+    end
+    object lblC4State: TLabel
+      Left = 473
+      Height = 54
+      Hint = 'Console 4'
+      Top = 1
+      Width = 118
+      Align = alLeft
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'Console 4'#10'Disconnected'
+      Color = clRed
+      Layout = tlCenter
+      ParentColor = False
+      Transparent = False
+    end
+    object lblC3State: TLabel
+      Left = 355
+      Height = 54
+      Hint = 'Console 3'
+      Top = 1
+      Width = 118
+      Align = alLeft
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'Console 3'#10'Disconnected'
+      Color = clRed
+      Layout = tlCenter
+      ParentColor = False
+      Transparent = False
+    end
+    object lblC2State: TLabel
+      Left = 237
+      Height = 54
+      Hint = 'Console 2'
+      Top = 1
+      Width = 118
+      Align = alLeft
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'Console 2'#10'Disconnected'
+      Color = clRed
+      Layout = tlCenter
+      ParentColor = False
+      Transparent = False
+    end
+    object lblLives: TLabel
+      Left = 591
+      Height = 54
+      Hint = 'Lives'
+      Top = 1
+      Width = 65
+      Align = alLeft
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'Lives'#10'?'
+      Layout = tlCenter
+      ParentColor = False
+    end
+    object lblRound: TLabel
+      Left = 656
+      Height = 54
+      Hint = 'Round'
+      Top = 1
+      Width = 65
+      Align = alLeft
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'Round'#10'?'
+      Layout = tlCenter
+      ParentColor = False
+    end
+  end
+  object btnReset: TButton
+    Left = 8
+    Height = 129
+    Top = 64
+    Width = 192
+    Caption = 'Reset'
+    OnClick = btnSkipIntroClick
+    TabOrder = 2
+  end
+  object MQTTClient1: TMQTTClient
+    ClientID = 'commander'
+    Hostname = '192.168.1.30'
+    Port = 1883
+    OnConnAck = MQTTClient1ConnAck
+    OnPublish = MQTTClient1Publish
+    left = 512
+    top = 312
+  end
+  object tmrStatusLabels: TTimer
+    OnTimer = tmrStatusLabelsTimer
+    left = 624
+    top = 304
+  end
+end
