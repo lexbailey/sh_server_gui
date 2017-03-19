@@ -145,9 +145,9 @@ var curVol: integer;
 begin
   curVol := strtoint(getBashCommandOutput('amixer get ' + soundDevice + ' | grep Mono: | sed -e "s/[^[]*\[\([0-9]\+\)%.*/\1/"'));
   if button = btNext then
-    getBashCommandOutput('amixer set ' + soundDevice + ' -- ' + inttostr(curVol+5) + '%' );
+    getBashCommandOutput('amixer set ' + soundDevice + ' -- ' + inttostr(curVol+2) + '%' );
   if button = btPrev then
-    getBashCommandOutput('amixer set ' + soundDevice + ' -- ' + inttostr(curVol-5) + '%' );
+    getBashCommandOutput('amixer set ' + soundDevice + ' -- ' + inttostr(curVol-2) + '%' );
   checkVolume;
 end;
 
