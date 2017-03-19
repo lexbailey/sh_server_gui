@@ -55,8 +55,6 @@ begin
     pingProc.Parameters.Add('-q');
     pingProc.Options := pingProc.Options + [poWaitOnExit];
     pingProc.Execute;
-    //write('Console ' + inttostr(num) + ':');
-    //writeln(pingProc.ExitStatus);
     if (pingProc.ExitStatus <> 0) then
       FStates[num] := CONSOLE_DOWN
     else

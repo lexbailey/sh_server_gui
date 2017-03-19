@@ -6,16 +6,17 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, MQTTComponent, Process, consoleCheckerThread, MQTTComponentReadThread,
-  regexpr;
+  ExtCtrls, ComCtrls, MQTTComponent, Process, consoleCheckerThread,
+  mqttmanagerthread, regexpr;
 
 type
 
   { TfrmMonitor }
 
   TfrmMonitor = class(TForm)
-    btnSkipIntro: TButton;
     btnReset: TButton;
+    btnSkipIntro: TButton;
+    GroupBox1: TGroupBox;
     lblC4State: TLabel;
     lblC3State: TLabel;
     lblC2State: TLabel;
@@ -25,19 +26,29 @@ type
     lblC1State: TLabel;
     MQTTClient1: TMQTTClient;
     Panel1: TPanel;
+    pnlSystemCommands: TPanel;
+    pnlMQTTCommands: TPanel;
+    pbVolume: TProgressBar;
     tmrStatusLabels: TTimer;
+    volUpDown: TUpDown;
     procedure btnSkipIntroClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure MQTTClient1ConnAck(Sender: TObject; ReturnCode: integer);
     procedure MQTTClient1Publish(Sender: TObject; topic, payload: ansistring);
     procedure tmrStatusLabelsTimer(Sender: TObject);
     procedure setMonitorLabelState(lbl: tlabel; level: integer; newcaption: string);
+    procedure volUpDownClick(Sender: TObject; Button: TUDBtnType);
+    function getBashCommandOutput(bashCommand: string; chomp: boolean = true):string;
+    procedure checkVolume;
   private
     { private declarations }
   public
     { public declarations }
   var
     consoleChecker: TConsoleCheckerThread;
+    MQTTManager: TMQTTManagerThread;
+    soundDevice : string;
   const
     LEVEL_GOOD = 0;
     LEVEL_MINOR_PROBLEM = 1;
@@ -54,18 +65,65 @@ implementation
 
 { TfrmMonitor }
 
+function TFrmMonitor.getBashCommandOutput(bashCommand: string; chomp: boolean = true): string;
+const
+  BUF_SIZE = 999;
+var bashProc: TProcess;
+  OutputStream : TStringStream;
+  BytesRead : longint;
+  Buffer : array[1..BUF_SIZE] of byte;
+begin
+  bashProc := TProcess.create(nil);
+  bashProc.Executable:='/bin/bash';
+  bashProc.Parameters.Add('-c');
+  bashProc.Parameters.Add(bashCommand);
+  bashProc.Options := bashProc.Options + [poWaitOnExit, poUsePipes];
+  bashProc.Execute;
+  OutputStream := TStringStream.Create('');
+  repeat
+    BytesRead := bashProc.Output.Read(Buffer, BUF_SIZE);
+    OutputStream.Write(Buffer, BytesRead);
+  until BytesRead = 0;
+  bashProc.Free;
+  result := OutputStream.DataString;
+  if chomp then
+    setlength(result, length(result)-1);
+end;
+
+procedure tfrmMonitor.checkVolume;
+var
+  curVolString : string;
+  curVol: integer;
+begin
+  pbVolume.Min:=0;
+  pbVolume.Max:=100;
+  curVolString := getBashCommandOutput('amixer get ' + soundDevice + ' | grep Mono: | sed -e "s/[^[]*\[\([0-9]\+\)%.*/\1/"');
+  curVol := strtoint(curVolString);
+  pbVolume.Position:=curVol;
+end;
+
 procedure TfrmMonitor.btnSkipIntroClick(Sender: TObject);
 begin
   if MQTTClient1.isConnected then
     MQTTClient1.Publish('command/skip_intro', '')
 end;
 
-procedure TfrmMonitor.FormCreate(Sender: TObject);
-var i: integer;
+procedure TfrmMonitor.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
+  consoleChecker.shouldStop:=true;
+end;
+
+procedure TfrmMonitor.FormCreate(Sender: TObject);
+begin
+  soundDevice := getBashCommandOutput('amixer | head -n1 | sed -e "s/[^'']*''\([^'']*\)''.*/\1/"');
+  checkVolume;
   consoleChecker := TConsoleCheckerThread.Create(false);
+  MQTTManager := TMQTTManagerThread.Create(false);
+  MQTTManager.client := MQTTClient1;
   //consoleChecker.shouldStop:=true; // Uncomment to prevent ping output getting in the way of debugging
   MQTTClient1.Connect;
+
+  tmrStatusLabels.enabled := true;
 end;
 
 procedure TfrmMonitor.setMonitorLabelState(lbl: tlabel; level: integer; newcaption: string);
@@ -80,6 +138,17 @@ begin
   if level = LEVEL_BAD then begin
     lbl.color := clRed;
   end;
+end;
+
+procedure TfrmMonitor.volUpDownClick(Sender: TObject; Button: TUDBtnType);
+var curVol: integer;
+begin
+  curVol := strtoint(getBashCommandOutput('amixer get ' + soundDevice + ' | grep Mono: | sed -e "s/[^[]*\[\([0-9]\+\)%.*/\1/"'));
+  if button = btNext then
+    getBashCommandOutput('amixer set ' + soundDevice + ' -- ' + inttostr(curVol+5) + '%' );
+  if button = btPrev then
+    getBashCommandOutput('amixer set ' + soundDevice + ' -- ' + inttostr(curVol-5) + '%' );
+  checkVolume;
 end;
 
 procedure TfrmMonitor.MQTTClient1ConnAck(Sender: TObject; ReturnCode: integer);
@@ -114,25 +183,20 @@ begin
   RegexObj.Free;
 end;
 
-
-//'ping 192.168.1.32 -w1 -c1'
-
 procedure TfrmMonitor.tmrStatusLabelsTimer(Sender: TObject);
 var i: integer;
   consoleLabelName:string;
   consoleLabel:TLabel;
 begin
-  if not MQTTClient1.isConnected then
-    begin
-      setMonitorLabelState(lblMQTTState, LEVEL_BAD, 'Disconnected');
-      MQTTClient1.Connect;
-    end else
-    begin
-      if MQTTClient1.publish('status/monitorconnected', '1') then
-        setMonitorLabelState(lblMQTTState, LEVEL_GOOD, 'Connected')
-      else
-        setMonitorLabelState(lblMQTTState, LEVEL_GOOD, 'Disconnected');
-    end;
+  checkvolume;
+  if MQTTManager.connected then begin
+    setMonitorLabelState(lblMQTTState, LEVEL_GOOD, 'Connected');
+    pnlMQTTCommands.Enabled:=true;
+  end else
+  begin
+    pnlMQTTCommands.Enabled:=false;
+    setMonitorLabelState(lblMQTTState, LEVEL_BAD, 'Disconnected');
+  end;
 
   for i:= 0 to 3 do begin
     consoleLabelName := 'lblC' + inttostr(i+1) + 'State';
