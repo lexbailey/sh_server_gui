@@ -188,6 +188,8 @@ object frmMonitor: TfrmMonitor
         Top = 0
         Width = 32
         Orientation = pbVertical
+        Position = 50
+        Smooth = True
         TabOrder = 1
       end
     end
