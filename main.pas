@@ -16,6 +16,7 @@ type
   TfrmMonitor = class(TForm)
     btnReset: TButton;
     btnSkipIntro: TButton;
+    btnPoweroffAll: TButton;
     GroupBox1: TGroupBox;
     lblC4State: TLabel;
     lblC3State: TLabel;
@@ -26,11 +27,13 @@ type
     lblC1State: TLabel;
     MQTTClient1: TMQTTClient;
     Panel1: TPanel;
+    Panel2: TPanel;
     pnlSystemCommands: TPanel;
     pnlMQTTCommands: TPanel;
     pbVolume: TProgressBar;
     tmrStatusLabels: TTimer;
     volUpDown: TUpDown;
+    procedure btnPoweroffAllClick(Sender: TObject);
     procedure btnResetClick(Sender: TObject);
     procedure btnSkipIntroClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -119,6 +122,18 @@ end;
 procedure TfrmMonitor.btnResetClick(Sender: TObject);
 begin
   doCommand('stop_game', 'Stop the current game now, so a new game can be started.');
+end;
+
+procedure TfrmMonitor.btnPoweroffAllClick(Sender: TObject);
+begin
+  if TfrmConfirm.shouldTakeAction('Shutdown all consoles and the server.') then
+  begin
+    getBashCommandOutput('ssh -oPasswordAuthentication=no root@192.168.1.31 poweroff');
+    getBashCommandOutput('ssh -oPasswordAuthentication=no root@192.168.1.32 poweroff');
+    getBashCommandOutput('ssh -oPasswordAuthentication=no root@192.168.1.33 poweroff');
+    getBashCommandOutput('ssh -oPasswordAuthentication=no root@192.168.1.34 poweroff');
+    getBashCommandOutput('ssh -oPasswordAuthentication=no pi@192.168.1.30 /sbin/poweroff');
+  end;
 end;
 
 procedure TfrmMonitor.FormClose(Sender: TObject; var CloseAction: TCloseAction);

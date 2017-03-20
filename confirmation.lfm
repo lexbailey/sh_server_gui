@@ -3,6 +3,7 @@ object frmConfirm: TfrmConfirm
   Height = 201
   Top = 264
   Width = 489
+  BorderStyle = bsSingle
   Caption = 'Confrmation'
   ClientHeight = 201
   ClientWidth = 489
