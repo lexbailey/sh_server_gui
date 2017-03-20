@@ -128,11 +128,11 @@ procedure TfrmMonitor.btnPoweroffAllClick(Sender: TObject);
 begin
   if TfrmConfirm.shouldTakeAction('Shutdown all consoles and the server.') then
   begin
-    getBashCommandOutput('ssh -oPasswordAuthentication=no root@192.168.1.31 poweroff');
-    getBashCommandOutput('ssh -oPasswordAuthentication=no root@192.168.1.32 poweroff');
-    getBashCommandOutput('ssh -oPasswordAuthentication=no root@192.168.1.33 poweroff');
-    getBashCommandOutput('ssh -oPasswordAuthentication=no root@192.168.1.34 poweroff');
-    getBashCommandOutput('ssh -oPasswordAuthentication=no pi@192.168.1.30 /sbin/poweroff');
+    getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no root@192.168.1.31 /sbin/poweroff');
+    getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no root@192.168.1.32 /sbin/poweroff');
+    getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no root@192.168.1.33 /sbin/poweroff');
+    getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no root@192.168.1.34 /sbin/poweroff');
+    getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no pi@192.168.1.30 sudo /sbin/poweroff');
   end;
 end;
 
