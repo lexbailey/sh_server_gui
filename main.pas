@@ -130,13 +130,13 @@ procedure TfrmMonitor.setMonitorLabelState(lbl: tlabel; level: integer; newcapti
 begin
   lbl.Caption:=lbl.Hint + #10 + newcaption;
   if level = LEVEL_GOOD then begin
-    lbl.color := clGreen;
+    lbl.color := $00a0ffb1;
   end;
   if level = LEVEL_MINOR_PROBLEM then begin
-    lbl.color := clYellow;
+    lbl.color := $0084FAFF;
   end;
   if level = LEVEL_BAD then begin
-    lbl.color := clRed;
+    lbl.color := $00a0a0ff;
   end;
 end;
 

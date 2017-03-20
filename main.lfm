@@ -16,89 +16,90 @@ object frmMonitor: TfrmMonitor
     Top = 0
     Width = 790
     Align = alTop
+    BevelOuter = bvNone
     ClientHeight = 80
     ClientWidth = 790
     TabOrder = 0
     object lblMQTTState: TLabel
-      Left = 1
-      Height = 78
+      Left = 0
+      Height = 80
       Hint = 'MQTT'
-      Top = 1
+      Top = 0
       Width = 127
       Align = alLeft
       Alignment = taCenter
       AutoSize = False
       Caption = 'MQTT'#10'Disconnected'
-      Color = clRed
+      Color = 10526975
       Layout = tlCenter
       ParentColor = False
       Transparent = False
     end
     object lblC1State: TLabel
-      Left = 128
-      Height = 78
+      Left = 127
+      Height = 80
       Hint = 'Console 1'
-      Top = 1
+      Top = 0
       Width = 128
       Align = alLeft
       Alignment = taCenter
       AutoSize = False
-      Caption = 'Console 1'#10'Disconnected'
-      Color = clRed
+      Caption = 'Console 1'#10'Unreachable'
+      Color = 10526975
       Layout = tlCenter
       ParentColor = False
       Transparent = False
     end
     object lblC4State: TLabel
-      Left = 512
-      Height = 78
+      Left = 511
+      Height = 80
       Hint = 'Console 4'
-      Top = 1
+      Top = 0
       Width = 128
       Align = alLeft
       Alignment = taCenter
       AutoSize = False
-      Caption = 'Console 4'#10'Disconnected'
-      Color = clRed
+      Caption = 'Console 4'#10'Unreachable'
+      Color = 10526975
       Layout = tlCenter
       ParentColor = False
       Transparent = False
     end
     object lblC3State: TLabel
-      Left = 384
-      Height = 78
+      Left = 383
+      Height = 80
       Hint = 'Console 3'
-      Top = 1
+      Top = 0
       Width = 128
       Align = alLeft
       Alignment = taCenter
       AutoSize = False
-      Caption = 'Console 3'#10'Disconnected'
-      Color = clRed
+      Caption = 'Console 3'#10'Unreachable'
+      Color = 10526975
       Layout = tlCenter
       ParentColor = False
       Transparent = False
     end
     object lblC2State: TLabel
-      Left = 256
-      Height = 78
+      Left = 255
+      Height = 80
       Hint = 'Console 2'
-      Top = 1
+      Top = 0
       Width = 128
       Align = alLeft
       Alignment = taCenter
       AutoSize = False
-      Caption = 'Console 2'#10'Disconnected'
-      Color = clRed
+      Caption = 'Console 2'#10'Unreachable'
+      Color = 10526975
       Layout = tlCenter
       ParentColor = False
       Transparent = False
     end
     object lblLives: TLabel
-      Left = 640
-      Height = 78
+      Left = 639
+      Height = 80
       Hint = 'Lives'
-      Top = 1
+      Top = 0
       Width = 65
       Align = alLeft
       Alignment = taCenter
@@ -108,10 +109,10 @@ object frmMonitor: TfrmMonitor
       ParentColor = False
     end
     object lblRound: TLabel
-      Left = 705
-      Height = 78
+      Left = 704
+      Height = 80
       Hint = 'Round'
-      Top = 1
+      Top = 0
       Width = 65
       Align = alLeft
       Alignment = taCenter
@@ -127,6 +128,7 @@ object frmMonitor: TfrmMonitor
     Top = 80
     Width = 232
     Align = alLeft
+    BevelOuter = bvNone
     ClientHeight = 380
     ClientWidth = 232
     Enabled = False
@@ -156,18 +158,19 @@ object frmMonitor: TfrmMonitor
     Top = 80
     Width = 136
     Align = alLeft
+    BevelOuter = bvNone
     ClientHeight = 380
     ClientWidth = 136
     TabOrder = 2
     object GroupBox1: TGroupBox
-      Left = 1
+      Left = 0
       Height = 175
-      Top = 1
-      Width = 134
+      Top = 0
+      Width = 136
       Align = alTop
       Caption = 'Volume'
       ClientHeight = 151
-      ClientWidth = 130
+      ClientWidth = 132
       TabOrder = 0
       object volUpDown: TUpDown
         Left = 48
