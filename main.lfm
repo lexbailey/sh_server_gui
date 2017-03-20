@@ -100,7 +100,7 @@ object frmMonitor: TfrmMonitor
       Height = 80
       Hint = 'Lives'
       Top = 0
-      Width = 65
+      Width = 73
       Align = alLeft
       Alignment = taCenter
       AutoSize = False
@@ -109,7 +109,7 @@ object frmMonitor: TfrmMonitor
       ParentColor = False
     end
     object lblRound: TLabel
-      Left = 704
+      Left = 712
       Height = 80
       Hint = 'Round'
       Top = 0
