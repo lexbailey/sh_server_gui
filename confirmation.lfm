@@ -2,49 +2,64 @@ object frmConfirm: TfrmConfirm
   Left = 518
   Height = 201
   Top = 264
-  Width = 454
+  Width = 489
   Caption = 'Confrmation'
   ClientHeight = 201
-  ClientWidth = 454
+  ClientWidth = 489
   Font.Height = -19
   Position = poScreenCenter
   LCLVersion = '1.6.0.4'
-  object btnCancel: TButton
-    Left = 8
-    Height = 48
-    Top = 144
-    Width = 200
-    Caption = 'Oops, sorry, nope'
-    Color = 11119103
-    OnClick = btnCancelClick
-    TabOrder = 0
-  end
   object Label1: TLabel
-    Left = 8
+    Left = 0
     Height = 22
-    Top = 8
-    Width = 440
+    Top = 0
+    Width = 489
+    Align = alTop
     Caption = 'Are you sure you want to take the following action?'
     ParentColor = False
   end
-  object btnConfirm: TButton
-    Left = 248
-    Height = 48
-    Top = 144
-    Width = 200
-    Caption = 'Yes! Indeed!'
-    Color = 11599783
-    OnClick = btnConfirmClick
-    TabOrder = 1
-  end
   object lblActionText: TLabel
-    Left = 8
-    Height = 96
-    Top = 40
-    Width = 440
+    Left = 0
+    Height = 129
+    Top = 22
+    Width = 489
+    Align = alClient
     AutoSize = False
-    Caption = '(Unknown Action)'
+    Caption = #10'(Unknown Action)'
     ParentColor = False
     WordWrap = True
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 50
+    Top = 151
+    Width = 489
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 50
+    ClientWidth = 489
+    TabOrder = 0
+    object btnCancel: TButton
+      Left = 0
+      Height = 50
+      Top = 0
+      Width = 200
+      Align = alLeft
+      Caption = 'Oops, sorry, nope'
+      Color = 11119103
+      OnClick = btnCancelClick
+      TabOrder = 0
+    end
+    object btnConfirm: TButton
+      Left = 289
+      Height = 50
+      Top = 0
+      Width = 200
+      Align = alRight
+      Caption = 'Yes! Indeed!'
+      Color = 11599783
+      OnClick = btnConfirmClick
+      TabOrder = 1
+    end
   end
 end

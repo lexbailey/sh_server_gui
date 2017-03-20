@@ -5,7 +5,8 @@ unit confirmation;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  ExtCtrls;
 
 type
 
@@ -16,6 +17,7 @@ type
     btnConfirm: TButton;
     Label1: TLabel;
     lblActionText: TLabel;
+    Panel1: TPanel;
 
     procedure btnCancelClick(Sender: TObject);
     procedure btnConfirmClick(Sender: TObject);
@@ -38,7 +40,7 @@ class function TfrmConfirm.shouldTakeAction(commandAction: string):boolean;
 var form : TfrmConfirm;
 begin
   form := TfrmConfirm.create(nil);
-  form.lblActionText.Caption:=commandAction;
+  form.lblActionText.Caption:=#10+commandAction;
   form.ShowModal;
   result := form.FTakeAction;
   form.free;
