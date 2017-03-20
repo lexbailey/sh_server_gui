@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ComCtrls, MQTTComponent, Process, consoleCheckerThread,
-  mqttmanagerthread, regexpr;
+  mqttmanagerthread, regexpr, confirmation;
 
 type
 
@@ -31,6 +31,7 @@ type
     pbVolume: TProgressBar;
     tmrStatusLabels: TTimer;
     volUpDown: TUpDown;
+    procedure btnResetClick(Sender: TObject);
     procedure btnSkipIntroClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -41,6 +42,7 @@ type
     procedure volUpDownClick(Sender: TObject; Button: TUDBtnType);
     function getBashCommandOutput(bashCommand: string; chomp: boolean = true):string;
     procedure checkVolume;
+    procedure doCommand(commandTopic, commandText: string);
   private
     { private declarations }
   public
@@ -64,6 +66,13 @@ implementation
 {$R *.lfm}
 
 { TfrmMonitor }
+
+procedure TfrmMonitor.doCommand(commandTopic, commandText: string);
+begin
+  if TfrmConfirm.shouldTakeAction(commandText) then
+    if MQTTManager.connected then
+      MQTTClient1.Publish('command/' + commandTopic, '');
+end;
 
 function TFrmMonitor.getBashCommandOutput(bashCommand: string; chomp: boolean = true): string;
 const
@@ -104,8 +113,12 @@ end;
 
 procedure TfrmMonitor.btnSkipIntroClick(Sender: TObject);
 begin
-  if MQTTClient1.isConnected then
-    MQTTClient1.Publish('command/skip_intro', '')
+  doCommand('skip_intro', 'Skip the introduction sequence.');
+end;
+
+procedure TfrmMonitor.btnResetClick(Sender: TObject);
+begin
+  doCommand('stop_game', 'Stop the current game now, so a new game can be started.');
 end;
 
 procedure TfrmMonitor.FormClose(Sender: TObject; var CloseAction: TCloseAction);

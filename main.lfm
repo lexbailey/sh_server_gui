@@ -139,7 +139,7 @@ object frmMonitor: TfrmMonitor
       Top = 16
       Width = 216
       Caption = 'End current game'
-      OnClick = btnSkipIntroClick
+      OnClick = btnResetClick
       TabOrder = 0
     end
     object btnSkipIntro: TButton

@@ -35,7 +35,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="5">
       <Unit0>
         <Filename Value="servergui.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -56,6 +56,12 @@
         <Filename Value="mqttmanagerthread.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit3>
+      <Unit4>
+        <Filename Value="confirmation.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmConfirm"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
