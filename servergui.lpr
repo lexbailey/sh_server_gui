@@ -7,7 +7,8 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, main, consoleCheckerThread, mqttmanagerthread, confirmation
+  Forms, main, consoleCheckerThread, mqttmanagerthread, confirmation,
+  consoleform, progrunner
   { you can add units after this };
 
 {$R *.res}

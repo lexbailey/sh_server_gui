@@ -36,6 +36,7 @@ object frmMonitor: TfrmMonitor
       Transparent = False
     end
     object lblC1State: TLabel
+      Tag = 1
       Left = 127
       Height = 80
       Hint = 'Console 1'
@@ -49,8 +50,10 @@ object frmMonitor: TfrmMonitor
       Layout = tlCenter
       ParentColor = False
       Transparent = False
+      OnClick = lblConsoleStateClick
     end
     object lblC4State: TLabel
+      Tag = 4
       Left = 511
       Height = 80
       Hint = 'Console 4'
@@ -64,8 +67,10 @@ object frmMonitor: TfrmMonitor
       Layout = tlCenter
       ParentColor = False
       Transparent = False
+      OnClick = lblConsoleStateClick
     end
     object lblC3State: TLabel
+      Tag = 3
       Left = 383
       Height = 80
       Hint = 'Console 3'
@@ -79,8 +84,10 @@ object frmMonitor: TfrmMonitor
       Layout = tlCenter
       ParentColor = False
       Transparent = False
+      OnClick = lblConsoleStateClick
     end
     object lblC2State: TLabel
+      Tag = 2
       Left = 255
       Height = 80
       Hint = 'Console 2'
@@ -94,6 +101,7 @@ object frmMonitor: TfrmMonitor
       Layout = tlCenter
       ParentColor = False
       Transparent = False
+      OnClick = lblConsoleStateClick
     end
     object lblLives: TLabel
       Left = 639
@@ -144,7 +152,7 @@ object frmMonitor: TfrmMonitor
     end
     object btnSkipIntro: TButton
       Left = 8
-      Height = 89
+      Height = 88
       Top = 112
       Width = 216
       Caption = 'Skip intro'
@@ -153,11 +161,11 @@ object frmMonitor: TfrmMonitor
     end
   end
   object pnlSystemCommands: TPanel
-    Left = 232
+    Left = 654
     Height = 380
     Top = 80
     Width = 136
-    Align = alLeft
+    Align = alRight
     BevelOuter = bvNone
     ClientHeight = 380
     ClientWidth = 136
@@ -198,7 +206,7 @@ object frmMonitor: TfrmMonitor
     end
   end
   object Panel2: TPanel
-    Left = 368
+    Left = 232
     Height = 380
     Top = 80
     Width = 240
@@ -211,10 +219,19 @@ object frmMonitor: TfrmMonitor
       Left = 15
       Height = 88
       Top = 16
-      Width = 185
+      Width = 216
       Caption = 'Shutdown All'
       OnClick = btnPoweroffAllClick
       TabOrder = 0
+    end
+    object btnTerminal: TButton
+      Left = 15
+      Height = 88
+      Top = 112
+      Width = 216
+      Caption = 'Open Terminal'
+      OnClick = btnTerminalClick
+      TabOrder = 1
     end
   end
   object MQTTClient1: TMQTTClient
@@ -223,13 +240,13 @@ object frmMonitor: TfrmMonitor
     Port = 1883
     OnConnAck = MQTTClient1ConnAck
     OnPublish = MQTTClient1Publish
-    left = 512
-    top = 312
+    left = 696
+    top = 344
   end
   object tmrStatusLabels: TTimer
     Enabled = False
     OnTimer = tmrStatusLabelsTimer
-    left = 624
-    top = 304
+    left = 696
+    top = 280
   end
 end

@@ -7,13 +7,14 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ComCtrls, MQTTComponent, Process, consoleCheckerThread,
-  mqttmanagerthread, regexpr, confirmation;
+  mqttmanagerthread, regexpr, confirmation, consoleform, progrunner;
 
 type
 
   { TfrmMonitor }
 
   TfrmMonitor = class(TForm)
+    btnTerminal: TButton;
     btnReset: TButton;
     btnSkipIntro: TButton;
     btnPoweroffAll: TButton;
@@ -36,18 +37,20 @@ type
     procedure btnPoweroffAllClick(Sender: TObject);
     procedure btnResetClick(Sender: TObject);
     procedure btnSkipIntroClick(Sender: TObject);
+    procedure btnTerminalClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure lblConsoleStateClick(Sender: TObject);
     procedure MQTTClient1ConnAck(Sender: TObject; ReturnCode: integer);
     procedure MQTTClient1Publish(Sender: TObject; topic, payload: ansistring);
     procedure tmrStatusLabelsTimer(Sender: TObject);
-    procedure setMonitorLabelState(lbl: tlabel; level: integer; newcaption: string);
+    class procedure setMonitorLabelState(lbl: tlabel; level: integer; newcaption: string; hintPrefix: boolean = true);
     procedure volUpDownClick(Sender: TObject; Button: TUDBtnType);
-    function getBashCommandOutput(bashCommand: string; chomp: boolean = true):string;
     procedure checkVolume;
     procedure doCommand(commandTopic, commandText: string);
   private
     { private declarations }
+    frmConsole: TfrmConsole;
   public
     { public declarations }
   var
@@ -77,30 +80,7 @@ begin
       MQTTClient1.Publish('command/' + commandTopic, '');
 end;
 
-function TFrmMonitor.getBashCommandOutput(bashCommand: string; chomp: boolean = true): string;
-const
-  BUF_SIZE = 999;
-var bashProc: TProcess;
-  OutputStream : TStringStream;
-  BytesRead : longint;
-  Buffer : array[1..BUF_SIZE] of byte;
-begin
-  bashProc := TProcess.create(nil);
-  bashProc.Executable:='/bin/bash';
-  bashProc.Parameters.Add('-c');
-  bashProc.Parameters.Add(bashCommand);
-  bashProc.Options := bashProc.Options + [poWaitOnExit, poUsePipes];
-  bashProc.Execute;
-  OutputStream := TStringStream.Create('');
-  repeat
-    BytesRead := bashProc.Output.Read(Buffer, BUF_SIZE);
-    OutputStream.Write(Buffer, BytesRead);
-  until BytesRead = 0;
-  bashProc.Free;
-  result := OutputStream.DataString;
-  if chomp then
-    setlength(result, length(result)-1);
-end;
+
 
 procedure tfrmMonitor.checkVolume;
 var
@@ -109,7 +89,7 @@ var
 begin
   pbVolume.Min:=0;
   pbVolume.Max:=100;
-  curVolString := getBashCommandOutput('amixer get ' + soundDevice + ' | grep Mono: | sed -e "s/[^[]*\[\([0-9]\+\)%.*/\1/"');
+  curVolString := TProgRunner.getBashCommandOutput('amixer get ' + soundDevice + ' | grep Mono: | sed -e "s/[^[]*\[\([0-9]\+\)%.*/\1/"');
   curVol := strtoint(curVolString);
   pbVolume.Position:=curVol;
 end;
@@ -117,6 +97,11 @@ end;
 procedure TfrmMonitor.btnSkipIntroClick(Sender: TObject);
 begin
   doCommand('skip_intro', 'Skip the introduction sequence.');
+end;
+
+procedure TfrmMonitor.btnTerminalClick(Sender: TObject);
+begin
+  TProgRunner.startExternalProgram('xterm');
 end;
 
 procedure TfrmMonitor.btnResetClick(Sender: TObject);
@@ -128,11 +113,11 @@ procedure TfrmMonitor.btnPoweroffAllClick(Sender: TObject);
 begin
   if TfrmConfirm.shouldTakeAction('Shutdown all consoles and the server.') then
   begin
-    getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no root@192.168.1.31 /sbin/poweroff');
-    getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no root@192.168.1.32 /sbin/poweroff');
-    getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no root@192.168.1.33 /sbin/poweroff');
-    getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no root@192.168.1.34 /sbin/poweroff');
-    getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no pi@192.168.1.30 sudo /sbin/poweroff');
+    TProgRunner.getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no root@192.168.1.31 /sbin/poweroff');
+    TProgRunner.getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no root@192.168.1.32 /sbin/poweroff');
+    TProgRunner.getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no root@192.168.1.33 /sbin/poweroff');
+    TProgRunner.getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no root@192.168.1.34 /sbin/poweroff');
+    TProgRunner.getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no pi@192.168.1.30 sudo /sbin/poweroff');
   end;
 end;
 
@@ -143,7 +128,8 @@ end;
 
 procedure TfrmMonitor.FormCreate(Sender: TObject);
 begin
-  soundDevice := getBashCommandOutput('amixer | head -n1 | sed -e "s/[^'']*''\([^'']*\)''.*/\1/"');
+  frmConsole := nil;
+  soundDevice := TProgRunner.getBashCommandOutput('amixer | head -n1 | sed -e "s/[^'']*''\([^'']*\)''.*/\1/"');
   checkVolume;
   consoleChecker := TConsoleCheckerThread.Create(false);
   MQTTManager := TMQTTManagerThread.Create(false);
@@ -154,9 +140,22 @@ begin
   tmrStatusLabels.enabled := true;
 end;
 
-procedure TfrmMonitor.setMonitorLabelState(lbl: tlabel; level: integer; newcaption: string);
+procedure TfrmMonitor.lblConsoleStateClick(Sender: TObject);
 begin
-  lbl.Caption:=lbl.Hint + #10 + newcaption;
+  if frmConsole <> nil then
+    frmConsole.close;
+    frmConsole.free;
+  frmConsole := TfrmConsole.Create(nil);
+  frmConsole.curConsole:=tlabel(sender).tag;
+  frmConsole.show;
+end;
+
+class procedure TfrmMonitor.setMonitorLabelState(lbl: tlabel; level: integer; newcaption: string; hintPrefix: boolean = true);
+begin
+  if hintPrefix then
+    lbl.Caption:=lbl.Hint + #10 + newcaption
+  else
+    lbl.Caption:=newcaption;
   if level = LEVEL_GOOD then begin
     lbl.color := $00a0ffb1;
   end;
@@ -171,11 +170,11 @@ end;
 procedure TfrmMonitor.volUpDownClick(Sender: TObject; Button: TUDBtnType);
 var curVol: integer;
 begin
-  curVol := strtoint(getBashCommandOutput('amixer get ' + soundDevice + ' | grep Mono: | sed -e "s/[^[]*\[\([0-9]\+\)%.*/\1/"'));
+  curVol := strtoint(TProgRunner.getBashCommandOutput('amixer get ' + soundDevice + ' | grep Mono: | sed -e "s/[^[]*\[\([0-9]\+\)%.*/\1/"'));
   if button = btNext then
-    getBashCommandOutput('amixer set ' + soundDevice + ' -- ' + inttostr(curVol+2) + '%' );
+    TProgRunner.getBashCommandOutput('amixer set ' + soundDevice + ' -- ' + inttostr(curVol+2) + '%' );
   if button = btPrev then
-    getBashCommandOutput('amixer set ' + soundDevice + ' -- ' + inttostr(curVol-2) + '%' );
+    TProgRunner.getBashCommandOutput('amixer set ' + soundDevice + ' -- ' + inttostr(curVol-2) + '%' );
   checkVolume;
 end;
 
@@ -215,6 +214,8 @@ procedure TfrmMonitor.tmrStatusLabelsTimer(Sender: TObject);
 var i: integer;
   consoleLabelName:string;
   consoleLabel:TLabel;
+  level: integer;
+  description: string;
 begin
   checkvolume;
   if MQTTManager.connected then begin
@@ -230,13 +231,21 @@ begin
     consoleLabelName := 'lblC' + inttostr(i+1) + 'State';
     consoleLabel := TLabel(FindComponent(consoleLabelName));
     if (consoleChecker.states[i] = TConsoleCheckerThread.CONSOLE_UNKNOWN) or (consoleChecker.states[i] = TConsoleCheckerThread.CONSOLE_DOWN) then begin
-      setMonitorLabelState(consoleLabel, LEVEL_BAD, 'Unreachable');
+      level := LEVEL_BAD;
+      description:='Unreachable';
     end else
     if consoleChecker.states[i] = TConsoleCheckerThread.CONSOLE_UP then begin
-      setMonitorLabelState(consoleLabel, LEVEL_MINOR_PROBLEM, 'Idle');
+      level := LEVEL_MINOR_PROBLEM;
+      description:='Idle';
     end else
     if consoleChecker.states[i] = TConsoleCheckerThread.CONSOLE_RUNNING then begin
-      setMonitorLabelState(consoleLabel, LEVEL_GOOD, 'Connected');
+      level := LEVEL_GOOD;
+      description:='Connected';
+    end;
+    setMonitorLabelState(consoleLabel, level, description);
+    if (frmConsole <> nil) and (frmConsole.curConsole = consoleLabel.Tag) then
+    begin
+      setMonitorLabelState(frmConsole.lblStatus, level, description, false);
     end;
   end;
 end;

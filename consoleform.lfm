@@ -1,0 +1,92 @@
+object frmConsole: TfrmConsole
+  Left = 613
+  Height = 460
+  Top = 152
+  Width = 790
+  Caption = 'frmConsole'
+  ClientHeight = 460
+  ClientWidth = 790
+  Font.Height = -19
+  LCLVersion = '1.6.0.4'
+  object lblConsoleName: TLabel
+    Left = 0
+    Height = 27
+    Top = 0
+    Width = 790
+    Align = alTop
+    Caption = 'Console'
+    Font.Height = -24
+    ParentColor = False
+    ParentFont = False
+  end
+  object btnShutdown: TButton
+    Left = 8
+    Height = 80
+    Top = 64
+    Width = 240
+    Caption = '↧ Shutdown'
+    OnClick = btnShutdownClick
+    TabOrder = 0
+  end
+  object lblStatus: TLabel
+    Left = 0
+    Height = 22
+    Top = 27
+    Width = 790
+    Align = alTop
+    Caption = 'Status'
+    ParentColor = False
+  end
+  object btnRestartclient: TButton
+    Left = 8
+    Height = 80
+    Top = 240
+    Width = 240
+    Caption = '↻ Restart Client'
+    OnClick = btnRestartclientClick
+    TabOrder = 1
+  end
+  object btnRestartOS: TButton
+    Left = 8
+    Height = 80
+    Top = 152
+    Width = 240
+    Caption = '↻ Restart OS'
+    OnClick = btnRestartOSClick
+    TabOrder = 2
+  end
+  object btnSSH: TButton
+    Left = 8
+    Height = 80
+    Top = 328
+    Width = 240
+    Caption = 'Open an SSH session'
+    OnClick = btnSSHClick
+    TabOrder = 3
+  end
+  object btnAddToGame: TButton
+    Left = 256
+    Height = 80
+    Top = 64
+    Width = 288
+    Caption = '⊕ Add To Current Game'
+    TabOrder = 4
+  end
+  object btnRemoveFromGame: TButton
+    Left = 256
+    Height = 80
+    Top = 152
+    Width = 288
+    Caption = '⊖ Remove From Current Game'
+    TabOrder = 5
+  end
+  object btnBack: TButton
+    Left = 256
+    Height = 80
+    Top = 328
+    Width = 288
+    Caption = '↩ Back to monitor view'
+    OnClick = btnBackClick
+    TabOrder = 6
+  end
+end
