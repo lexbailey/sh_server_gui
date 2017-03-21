@@ -9,6 +9,7 @@ object frmMonitor: TfrmMonitor
   Font.Height = -19
   OnClose = FormClose
   OnCreate = FormCreate
+  Position = poScreenCenter
   LCLVersion = '1.6.0.4'
   object Panel1: TPanel
     Left = 0

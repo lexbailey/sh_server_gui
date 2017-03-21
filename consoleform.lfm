@@ -1,12 +1,13 @@
 object frmConsole: TfrmConsole
-  Left = 613
+  Left = 786
   Height = 460
-  Top = 152
+  Top = 121
   Width = 790
   Caption = 'frmConsole'
   ClientHeight = 460
   ClientWidth = 790
   Font.Height = -19
+  Position = poScreenCenter
   LCLVersion = '1.6.0.4'
   object lblConsoleName: TLabel
     Left = 0
@@ -68,7 +69,7 @@ object frmConsole: TfrmConsole
     Left = 256
     Height = 80
     Top = 64
-    Width = 288
+    Width = 300
     Caption = '⊕ Add To Current Game'
     TabOrder = 4
   end
@@ -76,7 +77,7 @@ object frmConsole: TfrmConsole
     Left = 256
     Height = 80
     Top = 152
-    Width = 288
+    Width = 300
     Caption = '⊖ Remove From Current Game'
     TabOrder = 5
   end
@@ -84,7 +85,7 @@ object frmConsole: TfrmConsole
     Left = 256
     Height = 80
     Top = 328
-    Width = 288
+    Width = 300
     Caption = '↩ Back to monitor view'
     OnClick = btnBackClick
     TabOrder = 6
