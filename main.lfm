@@ -11,6 +11,7 @@ object frmMonitor: TfrmMonitor
   OnCreate = FormCreate
   Position = poDefaultPosOnly
   LCLVersion = '1.6.0.4'
+  WindowState = wsFullScreen
   object Panel1: TPanel
     Left = 0
     Height = 80
