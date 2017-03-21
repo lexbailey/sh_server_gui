@@ -35,6 +35,8 @@ type
   public
     { public declarations }
     property curConsole: integer read FCurConsole write setCurConsole;
+  const
+    timeoutCommand = 'timeout 3 ';
   end;
 
 implementation
@@ -48,7 +50,7 @@ begin
   if (confirm) then
     if not TfrmConfirm.shouldTakeAction(actionString) then
       exit;
-  TProgRunner.getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no root@192.168.1.3' + inttostr(FCurConsole) + ' ' + command);
+  TProgRunner.getBashCommandOutput(timeoutCommand + 'ssh -oPasswordAuthentication=no root@192.168.1.3' + inttostr(FCurConsole) + ' ' + command);
 end;
 
 procedure TfrmConsole.setCurConsole(console: integer);

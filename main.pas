@@ -65,7 +65,7 @@ type
     LEVEL_GOOD = 0;
     LEVEL_MINOR_PROBLEM = 1;
     LEVEL_BAD = 2;
-
+    timeoutCommand = 'timeout 3 ';
   end;
 
 var
@@ -116,7 +116,7 @@ end;
 procedure TfrmMonitor.btnRestartGameClick(Sender: TObject);
 begin
   if TfrmConfirm.shouldTakeAction('Restart Spacehack game server service') then
-    TProgRunner.getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no pi@192.168.1.30 sudo systemctl restart SpacehackServer.service');
+    TProgRunner.getBashCommandOutput(timeoutCommand + 'ssh -oPasswordAuthentication=no pi@192.168.1.30 sudo systemctl restart SpacehackServer.service');
 
 end;
 
@@ -124,18 +124,18 @@ procedure TfrmMonitor.btnPoweroffAllClick(Sender: TObject);
 begin
   if TfrmConfirm.shouldTakeAction('Shutdown all consoles and the server.') then
   begin
-    TProgRunner.getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no root@192.168.1.31 /sbin/poweroff');
-    TProgRunner.getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no root@192.168.1.32 /sbin/poweroff');
-    TProgRunner.getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no root@192.168.1.33 /sbin/poweroff');
-    TProgRunner.getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no root@192.168.1.34 /sbin/poweroff');
-    TProgRunner.getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no pi@192.168.1.30 sudo /sbin/poweroff');
+    TProgRunner.getBashCommandOutput(timeoutCommand + 'ssh -oPasswordAuthentication=no root@192.168.1.31 /sbin/poweroff');
+    TProgRunner.getBashCommandOutput(timeoutCommand + 'ssh -oPasswordAuthentication=no root@192.168.1.32 /sbin/poweroff');
+    TProgRunner.getBashCommandOutput(timeoutCommand + 'ssh -oPasswordAuthentication=no root@192.168.1.33 /sbin/poweroff');
+    TProgRunner.getBashCommandOutput(timeoutCommand + 'ssh -oPasswordAuthentication=no root@192.168.1.34 /sbin/poweroff');
+    TProgRunner.getBashCommandOutput(timeoutCommand + 'ssh -oPasswordAuthentication=no pi@192.168.1.30 sudo /sbin/poweroff');
   end;
 end;
 
 procedure TfrmMonitor.btnRebootPiClick(Sender: TObject);
 begin
   if TfrmConfirm.shouldTakeAction('Reboot the spacehack server box') then
-    TProgRunner.getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no pi@192.168.1.30 sudo /sbin/reboot');
+    TProgRunner.getBashCommandOutput(timeoutCommand + 'ssh -oPasswordAuthentication=no pi@192.168.1.30 sudo /sbin/reboot');
 end;
 
 procedure TfrmMonitor.FormClose(Sender: TObject; var CloseAction: TCloseAction);
