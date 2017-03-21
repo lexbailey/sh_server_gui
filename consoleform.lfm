@@ -7,7 +7,7 @@ object frmConsole: TfrmConsole
   ClientHeight = 460
   ClientWidth = 790
   Font.Height = -19
-  Position = poScreenCenter
+  Position = poDefault
   LCLVersion = '1.6.0.4'
   object lblConsoleName: TLabel
     Left = 0
