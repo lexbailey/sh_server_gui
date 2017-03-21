@@ -9,7 +9,7 @@ object frmMonitor: TfrmMonitor
   Font.Height = -19
   OnClose = FormClose
   OnCreate = FormCreate
-  Position = poDefault
+  Position = poDefaultPosOnly
   LCLVersion = '1.6.0.4'
   object Panel1: TPanel
     Left = 0
@@ -210,14 +210,14 @@ object frmMonitor: TfrmMonitor
     Left = 232
     Height = 380
     Top = 80
-    Width = 240
+    Width = 216
     Align = alLeft
     BevelOuter = bvNone
     ClientHeight = 380
-    ClientWidth = 240
+    ClientWidth = 216
     TabOrder = 3
     object btnPoweroffAll: TButton
-      Left = 15
+      Left = 0
       Height = 88
       Top = 16
       Width = 216
@@ -226,7 +226,7 @@ object frmMonitor: TfrmMonitor
       TabOrder = 0
     end
     object btnTerminal: TButton
-      Left = 15
+      Left = 0
       Height = 88
       Top = 112
       Width = 216

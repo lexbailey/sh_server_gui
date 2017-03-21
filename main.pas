@@ -145,7 +145,7 @@ begin
   if frmConsole <> nil then
     frmConsole.close;
     frmConsole.free;
-  frmConsole := TfrmConsole.Create(nil);
+  frmConsole := TfrmConsole.Create(self);
   frmConsole.curConsole:=tlabel(sender).tag;
   frmConsole.show;
 end;
