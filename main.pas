@@ -15,6 +15,7 @@ type
 
   TfrmMonitor = class(TForm)
     btnRebootPi: TButton;
+    btnRestartGame: TButton;
     btnTerminal: TButton;
     btnReset: TButton;
     btnSkipIntro: TButton;
@@ -38,6 +39,7 @@ type
     procedure btnPoweroffAllClick(Sender: TObject);
     procedure btnRebootPiClick(Sender: TObject);
     procedure btnResetClick(Sender: TObject);
+    procedure btnRestartGameClick(Sender: TObject);
     procedure btnSkipIntroClick(Sender: TObject);
     procedure btnTerminalClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -111,6 +113,13 @@ begin
   doCommand('stop_game', 'Stop the current game now, so a new game can be started.');
 end;
 
+procedure TfrmMonitor.btnRestartGameClick(Sender: TObject);
+begin
+  if TfrmConfirm.shouldTakeAction('Restart Spacehack game server service') then
+    TProgRunner.getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no pi@192.168.1.30 sudo systemctl restart SpacehackServer.service');
+
+end;
+
 procedure TfrmMonitor.btnPoweroffAllClick(Sender: TObject);
 begin
   if TfrmConfirm.shouldTakeAction('Shutdown all consoles and the server.') then
@@ -125,7 +134,8 @@ end;
 
 procedure TfrmMonitor.btnRebootPiClick(Sender: TObject);
 begin
-  TProgRunner.getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no pi@192.168.1.30 sudo /sbin/reboot');
+  if TfrmConfirm.shouldTakeAction('Reboot the spacehack server box') then
+    TProgRunner.getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no pi@192.168.1.30 sudo /sbin/reboot');
 end;
 
 procedure TfrmMonitor.FormClose(Sender: TObject; var CloseAction: TCloseAction);
