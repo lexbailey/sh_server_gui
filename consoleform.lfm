@@ -9,7 +9,6 @@ object frmConsole: TfrmConsole
   Font.Height = -19
   Position = poDefaultPosOnly
   LCLVersion = '1.6.0.4'
-  WindowState = wsFullScreen
   object lblConsoleName: TLabel
     Left = 0
     Height = 27

@@ -14,6 +14,7 @@ type
   { TfrmMonitor }
 
   TfrmMonitor = class(TForm)
+    btnRebootPi: TButton;
     btnTerminal: TButton;
     btnReset: TButton;
     btnSkipIntro: TButton;
@@ -35,6 +36,7 @@ type
     tmrStatusLabels: TTimer;
     volUpDown: TUpDown;
     procedure btnPoweroffAllClick(Sender: TObject);
+    procedure btnRebootPiClick(Sender: TObject);
     procedure btnResetClick(Sender: TObject);
     procedure btnSkipIntroClick(Sender: TObject);
     procedure btnTerminalClick(Sender: TObject);
@@ -119,6 +121,11 @@ begin
     TProgRunner.getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no root@192.168.1.34 /sbin/poweroff');
     TProgRunner.getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no pi@192.168.1.30 sudo /sbin/poweroff');
   end;
+end;
+
+procedure TfrmMonitor.btnRebootPiClick(Sender: TObject);
+begin
+  TProgRunner.getBashCommandOutput('timeout 1 ssh -oPasswordAuthentication=no pi@192.168.1.30 sudo /sbin/reboot');
 end;
 
 procedure TfrmMonitor.FormClose(Sender: TObject; var CloseAction: TCloseAction);
