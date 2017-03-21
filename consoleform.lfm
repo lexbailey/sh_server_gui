@@ -3,7 +3,7 @@ object frmConsole: TfrmConsole
   Height = 460
   Top = 121
   Width = 790
-  Caption = 'frmConsole'
+  Caption = 'Console status'
   ClientHeight = 460
   ClientWidth = 790
   Font.Height = -19
@@ -72,6 +72,7 @@ object frmConsole: TfrmConsole
     Top = 64
     Width = 300
     Caption = '⊕ Add To Current Game'
+    Enabled = False
     TabOrder = 4
   end
   object btnRemoveFromGame: TButton
@@ -80,6 +81,7 @@ object frmConsole: TfrmConsole
     Top = 152
     Width = 300
     Caption = '⊖ Remove From Current Game'
+    Enabled = False
     TabOrder = 5
   end
   object btnBack: TButton
