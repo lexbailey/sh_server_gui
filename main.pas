@@ -16,6 +16,7 @@ type
   TfrmMonitor = class(TForm)
     btnRebootPi: TButton;
     btnRestartGame: TButton;
+    btnAddLife: TButton;
     btnTerminal: TButton;
     btnReset: TButton;
     btnSkipIntro: TButton;
@@ -36,6 +37,7 @@ type
     pbVolume: TProgressBar;
     tmrStatusLabels: TTimer;
     volUpDown: TUpDown;
+    procedure btnAddLifeClick(Sender: TObject);
     procedure btnPoweroffAllClick(Sender: TObject);
     procedure btnRebootPiClick(Sender: TObject);
     procedure btnResetClick(Sender: TObject);
@@ -130,6 +132,11 @@ begin
     TProgRunner.getBashCommandOutput(timeoutCommand + 'ssh -oPasswordAuthentication=no root@192.168.1.34 /sbin/poweroff');
     TProgRunner.getBashCommandOutput(timeoutCommand + 'ssh -oPasswordAuthentication=no pi@192.168.1.30 sudo /sbin/poweroff');
   end;
+end;
+
+procedure TfrmMonitor.btnAddLifeClick(Sender: TObject);
+begin
+  doCommand('add_life', 'Add one life to the current game.');
 end;
 
 procedure TfrmMonitor.btnRebootPiClick(Sender: TObject);

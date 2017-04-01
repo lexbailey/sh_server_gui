@@ -160,6 +160,15 @@ object frmMonitor: TfrmMonitor
       OnClick = btnSkipIntroClick
       TabOrder = 1
     end
+    object btnAddLife: TButton
+      Left = 8
+      Height = 88
+      Top = 208
+      Width = 192
+      Caption = 'Add life'
+      OnClick = btnAddLifeClick
+      TabOrder = 2
+    end
   end
   object pnlSystemCommands: TPanel
     Left = 654
